@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "474046932374",
+    "firebase_url": "https://slmax-6bd0b-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "slmax-6bd0b",
+    "storage_bucket": "slmax-6bd0b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:474046932374:android:fe08581b9fab8395d629b7",
+        "android_client_info": {
+          "package_name": "slmax.testovoe.zadanie"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "474046932374-arvgh4tl7p5vlbm9ein1e8grfkeqv5tj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBWOsd5EMOOeUrPlvUq9ZcAB3u6OmYEu0w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "474046932374-arvgh4tl7p5vlbm9ein1e8grfkeqv5tj.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "474046932374-e39f1ntbda984o001r4sd6ul26cess92.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "slmax-testovoe-zadanie"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
