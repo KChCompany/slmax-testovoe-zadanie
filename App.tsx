@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react';
 import {
-  FlatList,
   Keyboard,
   KeyboardAvoidingView,
   Platform,
@@ -8,7 +7,6 @@ import {
   ScrollView,
   StatusBar,
   StyleSheet,
-  Text,
   TouchableOpacity,
   TouchableWithoutFeedback,
   useColorScheme,
@@ -17,11 +15,7 @@ import {
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
 import {Header, NewNote, Note} from './src/components';
-import {
-  NoteType,
-  subscribeNotes,
-  unsubscribeNotes,
-} from './src/config/firebase';
+import {subscribeNotes, unsubscribeNotes} from './src/config/firebase';
 
 const App = () => {
   const isDarkMode = useColorScheme() === 'dark';
