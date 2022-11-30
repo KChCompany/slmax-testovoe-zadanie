@@ -1,4 +1,9 @@
 {
-  "name": "slmax заметки",
-  "displayName": "slmax заметки"
+  "name": "slmaxTestovoeZadanie",
+  "displayName": "slmax заметки",
+  "expo": {
+    "orientation": "portrait",
+    "name": "slmax заметки",
+    "slug": "slmax-testovoe-zadanie"
+  }
 }
