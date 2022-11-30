@@ -1,162 +1,260 @@
-import { Button, Platform, Text, TouchableOpacity, View } from "react-native";
+import {
+  Button,
+  Platform,
+  Text,
+  TouchableOpacity,
+  View,
+  StyleSheet,
+} from 'react-native';
 
 import React, {useEffect, useState} from 'react';
 import {ShowNoteButton} from '../ShowNoteButton';
 import {Swipeable} from 'react-native-gesture-handler';
 import {deleteNote} from '../../config/firebase';
 import {Countdown} from '../Countdown';
+import {Comment} from '../Comment';
 
 interface Props {
   id: string;
   title: string;
   description: string;
   date: string;
+  comments: any[];
+  reply: (reply: object | null) => void;
 }
 
-export const Note: React.FC<Props> = ({id, title, description, date}) => {
+export const Note: React.FC<Props> = ({
+  id,
+  title,
+  description,
+  date,
+  comments,
+  reply,
+}) => {
   const [visibility, setVisibility] = useState(false);
   const [countdown, setCountdown] = useState(false);
+  const [border, setBorder] = useState('');
+  const [commentVisibility, setCommentVisibility] = useState(false);
 
   const renderRightActions = (progress, dragX, onClick) => {
     return (
-      <View
-        style={{
-          margin: 0,
-          alignContent: 'center',
-          justifyContent: 'center',
-          width: 90,
-        }}>
-        <TouchableOpacity
-          style={{
-            backgroundColor: 'red',
-            flex: 1,
-            justifyContent: 'center',
-          }}
-          onPress={onClick}>
-          {countdown ? (
-            <Countdown onStop={() => deleteNote(id)} />
-          ) : (
-            <Text
-              style={{
-                fontSize: 14,
-                fontFamily: 'Raleway-SemiBold',
-                lineHeight: 16,
-                color: '#ffffff',
-                textAlign: 'center',
-              }}>
-              Удалить
-            </Text>
-          )}
-        </TouchableOpacity>
-      </View>
+      <TouchableOpacity style={styles.deleteButtonContainer} onPress={onClick}>
+        {countdown ? (
+          <Countdown onStop={() => deleteNote(id)} />
+        ) : (
+          <Text style={styles.deleteButtonText}>Удалить</Text>
+        )}
+      </TouchableOpacity>
     );
   };
+  const cleanComment = (comments: any) => {
+    if (comments) {
+      console.log('comments', comments);
+      const first = Object.keys(comments).filter((value, index, array) => {
+        return index === 0;
+      })[0];
+      console.log('first', first);
+      let result = JSON.parse(JSON.stringify(comments));
+      delete result[first].comments;
+      console.log('comments--', comments);
+      console.log('result', result);
+      return result;
+    }
+    return null;
+  };
   return (
-    <TouchableOpacity
-      onPress={async () => {
-        setVisibility(prevState => !prevState);
-      }}>
-      <Swipeable
-        containerStyle={{
-          borderWidth: 1,
-          borderRadius: 10,
-          marginHorizontal: 30,
-          height: 37,
-          borderColor: '#D2D2D2',
-          marginVertical: 5,
-        }}
-        renderRightActions={(progress, dragX) =>
-          renderRightActions(progress, dragX, () => {
-            setCountdown(prevState => !prevState);
-          })
-        }>
-        <View
-          style={{
-            backgroundColor: '#fff',
-            flexDirection: 'row',
-          }}>
-          <View style={{justifyContent: 'center'}}>
-            <Text
-              style={{
-                marginLeft: 17,
-                marginRight: 7,
-                fontSize: 14,
-                fontFamily: 'Raleway-SemiBold',
-                lineHeight: 16,
-              }}>
-              {title}
-            </Text>
+    <View>
+      <TouchableOpacity
+        onPress={async () => {
+          setVisibility(prevState => !prevState);
+          setCommentVisibility(() => false);
+          reply(null);
+        }}>
+        <Swipeable
+          containerStyle={styles.swipeContainer}
+          renderRightActions={(progress, dragX) =>
+            renderRightActions(progress, dragX, () => {
+              setCountdown(prevState => !prevState);
+            })
+          }>
+          <View style={styles.container}>
+            <View style={styles.titleContainer}>
+              <Text style={styles.titleText}>{title}</Text>
+            </View>
+            <View style={styles.separator} />
+            <View style={styles.shortDescriptionContainer}>
+              <Text
+                ellipsizeMode={'tail'}
+                numberOfLines={1}
+                style={styles.shortDescriptionText}>
+                {description.length < 20
+                  ? `${description}`
+                  : `${description.substring(0, 20)}...`}{' '}
+              </Text>
+            </View>
+            <View style={styles.showNoteButtonContainer}>
+              <ShowNoteButton />
+            </View>
           </View>
-          <View
-            style={{
-              borderRightColor: '#D2D2D2',
-              borderRightWidth: 1,
-              marginVertical: 11,
-            }}
-          />
-          <View style={{flex: 1, justifyContent: 'center'}}>
-            <Text
-              ellipsizeMode={'tail'}
-              numberOfLines={1}
-              style={{
-                marginLeft: 8,
-                marginRight: 7,
-                fontSize: 14,
-                fontFamily: 'Raleway-Light',
-                fontStyle: 'normal',
-                paddingTop: Platform.OS === 'ios' ? 3 : 0,
-                paddingBottom: Platform.OS === 'ios' ? 0 : 3,
-              }}>
-              {description.length < 20
-                ? `${description}`
-                : `${description.substring(0, 20)}...`}{' '}
-            </Text>
-          </View>
-
-          <View
-            style={{
-              marginTop: 7,
-              marginBottom: 6,
-              marginRight: 13,
-            }}>
-            <ShowNoteButton />
-          </View>
-        </View>
-      </Swipeable>
+        </Swipeable>
+      </TouchableOpacity>
       {visibility && (
-        <View
-          style={{
-            borderBottomColor: '#D2D2D2',
-            borderBottomWidth: 1,
-            marginHorizontal: 30,
-          }}>
-          <Text
-            style={{
-              marginTop: 5,
-              marginLeft: 17,
-              marginRight: Platform.OS === 'ios' ? 52 : 20,
-              fontSize: 12,
-              fontFamily: 'Raleway-Light',
-              fontStyle: 'normal',
-              textAlign: 'right',
+        <View>
+          <TouchableOpacity
+            style={[
+              styles.fullDescriptionContainer,
+              {borderBottomWidth: id === border ? 1 : 0},
+            ]}
+            onPress={() => {
+              reply({title, path: `${id}`});
+              setBorder(id);
             }}>
-            {date}
-          </Text>
-          <Text
-            style={{
-              marginTop: 9,
-              marginBottom: 11,
-              marginLeft: 17,
-              marginRight: 26,
-              fontSize: 12,
-              lineHeight: 15,
-              fontFamily: 'Raleway-Light',
-              fontStyle: 'normal',
-            }}>
-            {description}
-          </Text>
+            <Text style={styles.dateText}>{date}</Text>
+            <Text style={styles.fullDescriptionText}>{description}</Text>
+          </TouchableOpacity>
+          {comments &&
+            Object.keys(comments)
+              .filter((value, index, array) =>
+                commentVisibility ? true : index === 0,
+              )
+              .map(index => {
+                return (
+                  <View key={index}>
+                    <Comment
+                      id={index}
+                      title={comments[index].title}
+                      description={comments[index].description}
+                      date={comments[index].date}
+                      comments={
+                        commentVisibility
+                          ? comments[index].comments
+                          : cleanComment(comments[index].comments)
+                      }
+                      path={`${id}/comments/${index}`}
+                      reply={reply}
+                      border={border}
+                      setBorder={borderId => {
+                        setBorder(borderId);
+                      }}
+                    />
+                    {comments[index].comments && !commentVisibility && (
+                      <TouchableOpacity
+                        style={{
+                          flexDirection: 'row',
+                          marginHorizontal: 47,
+                          alignItems: 'center',
+                        }}
+                        onPress={() =>
+                          setCommentVisibility(prevState => !prevState)
+                        }>
+                        <View
+                          style={{
+                            borderBottomWidth: 1,
+                            width: 17,
+                            borderColor: '#D2D2D2',
+                            marginRight: 4,
+                          }}
+                        />
+                        <Text
+                          style={{
+                            fontFamily: 'Raleway-SemiBold',
+                            fontSize: 10,
+                            color: '#D2D2D2',
+                          }}>
+                          Показать все ответы
+                        </Text>
+                      </TouchableOpacity>
+                    )}
+                  </View>
+                );
+              })}
         </View>
       )}
-    </TouchableOpacity>
+    </View>
   );
 };
+
+const styles = StyleSheet.create({
+  swipeContainer: {
+    borderWidth: 1,
+    borderRadius: 5,
+    marginHorizontal: 30,
+    height: 37,
+    borderColor: '#D2D2D2',
+    marginVertical: 5,
+  },
+  container: {
+    backgroundColor: '#fff',
+    flexDirection: 'row',
+  },
+  titleContainer: {
+    justifyContent: 'center',
+  },
+  titleText: {
+    marginLeft: 17,
+    marginRight: 7,
+    fontSize: 14,
+    fontFamily: 'Raleway-SemiBold',
+    lineHeight: 16,
+  },
+  separator: {
+    borderRightColor: '#D2D2D2',
+    borderRightWidth: 1,
+    marginVertical: 11,
+  },
+  shortDescriptionContainer: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  shortDescriptionText: {
+    marginLeft: 8,
+    marginRight: 7,
+    fontSize: 14,
+    fontFamily: 'Raleway-Light',
+    fontStyle: 'normal',
+    paddingTop: Platform.OS === 'ios' ? 3 : 0,
+    paddingBottom: Platform.OS === 'ios' ? 0 : 3,
+  },
+  showNoteButtonContainer: {
+    marginTop: 7,
+    marginBottom: 6,
+    marginRight: 13,
+  },
+  fullDescriptionContainer: {
+    marginHorizontal: 30,
+    borderColor: '#D2D2D2',
+  },
+  dateText: {
+    marginTop: 5,
+    marginLeft: 17,
+    marginRight: Platform.OS === 'ios' ? 52 : 20,
+    fontSize: 12,
+    fontFamily: 'Raleway-Light',
+    fontStyle: 'normal',
+    textAlign: 'right',
+  },
+  fullDescriptionText: {
+    marginTop: 9,
+    marginBottom: 11,
+    marginLeft: 17,
+    marginRight: 26,
+    fontSize: 12,
+    lineHeight: 15,
+    fontFamily: 'Raleway-Light',
+    fontStyle: 'normal',
+  },
+  deleteButtonContainer: {
+    backgroundColor: 'red',
+    margin: 0,
+    alignContent: 'center',
+    justifyContent: 'center',
+    width: 90,
+  },
+  deleteButtonText: {
+    fontSize: 14,
+    fontFamily: 'Raleway-SemiBold',
+    lineHeight: 16,
+    color: '#ffffff',
+    textAlign: 'center',
+  },
+});

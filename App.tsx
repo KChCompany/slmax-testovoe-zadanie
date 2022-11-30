@@ -8,11 +8,11 @@ import {
   ScrollView,
   StatusBar,
   StyleSheet,
-  Text,
+  Text, TouchableOpacity,
   TouchableWithoutFeedback,
   useColorScheme,
   View,
-} from 'react-native';
+} from "react-native";
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
 import {Header, NewNote, Note} from './src/components';
@@ -28,7 +28,7 @@ const App = () => {
   const backgroundStyle = {
     backgroundColor: isDarkMode ? '#000000' : '#ffffff',
   };
-
+  const [reply, setReply] = useState(null);
   const [list, setList] = useState<any[]>([]);
 
   useEffect(() => {
@@ -48,13 +48,13 @@ const App = () => {
             barStyle={'light-content'}
             backgroundColor={backgroundStyle.backgroundColor}
           />
-          <View style={{zIndex: 1}}>
+          <TouchableOpacity style={{zIndex: 1}}>
             <Header />
-          </View>
+          </TouchableOpacity>
           <SafeAreaView style={[backgroundStyle, styles.container]}>
             <ScrollView
               contentInsetAdjustmentBehavior="automatic"
-              style={[backgroundStyle, styles.scrollContainer]}>
+              style={[backgroundStyle, styles.scrollContainer, {marginBottom: reply ? 0 : -20}]}>
               <View style={{height: 64}} />
               {list &&
                 Object.keys(list).map(index => {
@@ -65,13 +65,14 @@ const App = () => {
                       title={list[index].title}
                       description={list[index].description}
                       date={list[index].date}
+                      comments={list[index].comments}
+                      reply={(reply) => setReply(reply)}
                     />
                   );
                 })}
-
               <View style={{height: 20}} />
             </ScrollView>
-            <NewNote />
+            <NewNote reply={reply} />
           </SafeAreaView>
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>
@@ -88,7 +89,6 @@ const styles = StyleSheet.create({
     width: '100%',
     marginTop: -35,
     zIndex: 0,
-    marginBottom: -20,
   },
 });
 

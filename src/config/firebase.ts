@@ -12,35 +12,36 @@ export interface NoteType {
   date: string;
 }
 
-export async function addNote(title: string, description: string) {
-  const newReference = database.ref('/notes').push();
-
-  console.log('Auto generated key: ', newReference.key);
-
+const getDate = () => {
   const time = new Date();
   const DD =
-    time.getDate().toString().length == 1
+    time.getDate().toString().length === 1
       ? `0${time.getDate()}`
       : time.getDate().toString();
   const MM =
-    time.getMonth().toString().length == 1
+    time.getMonth().toString().length === 1
       ? `0${time.getMonth()}`
       : time.getMonth().toString();
   const YYYY = time.getFullYear();
   const hh =
-    time.getHours().toString().length == 1
+    time.getHours().toString().length === 1
       ? `0${time.getHours()}`
       : time.getHours().toString();
   const mm =
-    time.getMinutes().toString().length == 1
+    time.getMinutes().toString().length === 1
       ? `0${time.getMinutes()}`
       : time.getMinutes().toString();
+  return `${DD}.${MM}.${YYYY} ${hh}:${mm}`;
+};
+
+export async function addNote(title: string, description: string) {
+  const newReference = database.ref('/notes').push();
 
   newReference
     .set({
       title,
       description,
-      date: `${DD}.${MM}.${YYYY} ${hh}:${mm}`,
+      date: getDate(),
     })
     .then(() => console.log('Data updated.'));
 }
@@ -57,4 +58,20 @@ export const unsubscribeNotes = (onValueChange: any) => {
 
 export async function deleteNote(id: string) {
   await database.ref(`/notes/${id}`).remove();
+}
+
+export async function addComment(
+  title: string,
+  description: string,
+  path: string,
+) {
+  const newReference = database.ref(`/notes/${path}/comments`).push();
+  newReference
+    .set({
+      title,
+      description,
+      date: getDate(),
+    })
+    .then(() => console.log('Data updated.'));
+  console.log(path);
 }

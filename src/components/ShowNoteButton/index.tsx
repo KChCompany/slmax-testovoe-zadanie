@@ -1,12 +1,7 @@
 import * as React from 'react';
 import Svg, {Path} from 'react-native-svg';
-import {TouchableOpacity} from 'react-native';
 
-interface Props {
-  onPress: any;
-}
-
-export const ShowNoteButton: React.FC<Props> = ({onPress}) => {
+export const ShowNoteButton = () => {
   return (
     <Svg
       width={27}
