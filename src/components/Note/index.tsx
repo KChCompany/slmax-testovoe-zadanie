@@ -1,13 +1,13 @@
 import {
-  Button,
   Platform,
   Text,
   TouchableOpacity,
   View,
-  StyleSheet, useColorScheme,
-} from "react-native";
+  StyleSheet,
+  useColorScheme,
+} from 'react-native';
 
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {ShowNoteButton} from '../ShowNoteButton';
 import {Swipeable} from 'react-native-gesture-handler';
 import {deleteNote} from '../../config/firebase';
@@ -46,7 +46,7 @@ export const Note: React.FC<Props> = ({
     backgroundColor: isDarkMode ? '#363636' : '#ffffff',
   };
 
-  const renderRightActions = (progress, dragX, onClick) => {
+  const renderRightActions = (progress: any, dragX: any, onClick: () => void) => {
     return (
       <TouchableOpacity style={styles.deleteButtonContainer} onPress={onClick}>
         {countdown ? (
@@ -60,7 +60,7 @@ export const Note: React.FC<Props> = ({
   const cleanComment = (comments: any) => {
     if (comments) {
       console.log('comments', comments);
-      const first = Object.keys(comments).filter((value, index, array) => {
+      const first = Object.keys(comments).filter((value, index) => {
         return index === 0;
       })[0];
       console.log('first', first);
@@ -120,7 +120,9 @@ export const Note: React.FC<Props> = ({
               setBorder(id);
             }}>
             <Text style={[styles.dateText, themeTextStyle]}>{date}</Text>
-            <Text style={[styles.fullDescriptionText, themeTextStyle]}>{description}</Text>
+            <Text style={[styles.fullDescriptionText, themeTextStyle]}>
+              {description}
+            </Text>
           </TouchableOpacity>
           {comments &&
             Object.keys(comments)

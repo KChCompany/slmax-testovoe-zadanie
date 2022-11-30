@@ -1,6 +1,6 @@
 import * as React from 'react';
 import Svg, {G, Path, SvgProps} from 'react-native-svg';
-import { useColorScheme } from "react-native";
+import {useColorScheme} from 'react-native';
 
 export const BackgroundSvg = (props: SvgProps) => {
   const isDarkMode = useColorScheme() === 'dark';

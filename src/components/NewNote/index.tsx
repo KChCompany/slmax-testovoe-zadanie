@@ -4,8 +4,9 @@ import {
   TextInput,
   View,
   Text,
-  StyleSheet, useColorScheme,
-} from "react-native";
+  StyleSheet,
+  useColorScheme,
+} from 'react-native';
 
 import React, {useRef, useState} from 'react';
 

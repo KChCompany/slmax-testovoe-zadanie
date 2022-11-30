@@ -1,15 +1,12 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {
   StyleSheet,
   TouchableOpacity,
   View,
   Text,
-  TouchableHighlight,
-  TouchableNativeFeedback,
   useColorScheme,
-} from "react-native";
+} from 'react-native';
 
-// @ts-ignore
 interface Props {
   id: string;
   title: string;
@@ -41,9 +38,12 @@ export const Comment: React.FC<Props> = ({
 
   return (
     <View>
-      <TouchableOpacity style={[styles.container, {borderWidth: border === id ? 1 : 0}]}>
+      <TouchableOpacity
+        style={[styles.container, {borderWidth: border === id ? 1 : 0}]}>
         <Text style={[styles.titleText, themeTextStyle]}>{title}</Text>
-        <Text style={[styles.descriptionText, themeTextStyle]}>{description}</Text>
+        <Text style={[styles.descriptionText, themeTextStyle]}>
+          {description}
+        </Text>
         <View style={styles.footerContainer}>
           <Text style={styles.dateText}>{date}</Text>
           <TouchableOpacity
