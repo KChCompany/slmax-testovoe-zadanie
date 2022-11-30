@@ -6,12 +6,6 @@ const database = firebase
     'https://slmax-6bd0b-default-rtdb.europe-west1.firebasedatabase.app/',
   );
 
-export interface NoteType {
-  title: string;
-  description: string;
-  date: string;
-}
-
 const getDate = () => {
   const time = new Date();
   const DD =
@@ -37,13 +31,11 @@ const getDate = () => {
 export async function addNote(title: string, description: string) {
   const newReference = database.ref('/notes').push();
 
-  newReference
-    .set({
-      title,
-      description,
-      date: getDate(),
-    })
-    .then(() => console.log('Data updated.'));
+  newReference.set({
+    title,
+    description,
+    date: getDate(),
+  });
 }
 
 export const subscribeNotes = (update = (notes: any) => {}) => {
@@ -66,12 +58,9 @@ export async function addComment(
   path: string,
 ) {
   const newReference = database.ref(`/notes/${path}/comments`).push();
-  newReference
-    .set({
-      title,
-      description,
-      date: getDate(),
-    })
-    .then(() => console.log('Data updated.'));
-  console.log(path);
+  newReference.set({
+    title,
+    description,
+    date: getDate(),
+  });
 }

@@ -28,6 +28,9 @@ export const NewNote: React.FC<Props> = ({reply}) => {
   const themeTextStyle = {
     color: isDarkMode ? '#ffffff' : '#000000',
   };
+  const themeBackgroundStyle = {
+    backgroundColor: isDarkMode ? '#000000' : '#ffffff',
+  };
   return (
     <View>
       {reply && (
@@ -38,7 +41,7 @@ export const NewNote: React.FC<Props> = ({reply}) => {
           {reply.title}
         </Text>
       )}
-      <View style={styles.container}>
+      <View style={[styles.container, themeBackgroundStyle]}>
         <TextInput
           value={title}
           onChangeText={setTitle}

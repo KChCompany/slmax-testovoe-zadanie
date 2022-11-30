@@ -59,15 +59,11 @@ export const Note: React.FC<Props> = ({
   };
   const cleanComment = (comments: any) => {
     if (comments) {
-      console.log('comments', comments);
       const first = Object.keys(comments).filter((value, index) => {
         return index === 0;
       })[0];
-      console.log('first', first);
       let result = JSON.parse(JSON.stringify(comments));
       delete result[first].comments;
-      console.log('comments--', comments);
-      console.log('result', result);
       return result;
     }
     return null;
@@ -130,7 +126,6 @@ export const Note: React.FC<Props> = ({
                 commentVisibility ? true : index === 0,
               )
               .map(index => {
-                console.log('comments', Object.keys(comments).length);
                 return (
                   <View key={index}>
                     <Comment

@@ -44,9 +44,9 @@ const App = () => {
             barStyle={'light-content'}
             backgroundColor={backgroundStyle.backgroundColor}
           />
-          <TouchableOpacity style={{zIndex: 1}}>
+          <View style={styles.headerContainer}>
             <Header />
-          </TouchableOpacity>
+          </View>
           <SafeAreaView style={[backgroundStyle, styles.container]}>
             <ScrollView
               contentInsetAdjustmentBehavior="automatic"
@@ -99,6 +99,9 @@ const styles = StyleSheet.create({
     width: '100%',
     marginTop: -35,
     zIndex: 0,
+  },
+  headerContainer: {
+    zIndex: 1,
   },
 });
 
