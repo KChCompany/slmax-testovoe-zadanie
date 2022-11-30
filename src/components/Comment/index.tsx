@@ -1,5 +1,13 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, TouchableOpacity, View, Text} from 'react-native';
+import {
+  StyleSheet,
+  TouchableOpacity,
+  View,
+  Text,
+  TouchableHighlight,
+  TouchableNativeFeedback,
+  useColorScheme,
+} from "react-native";
 
 // @ts-ignore
 interface Props {
@@ -25,14 +33,17 @@ export const Comment: React.FC<Props> = ({
   border,
   setBorder,
 }) => {
-  useEffect(() => {
-    // console.log('----', comments);
-  });
+  const isDarkMode = useColorScheme() === 'dark';
+
+  const themeTextStyle = {
+    color: isDarkMode ? '#ffffff' : '#000000',
+  };
+
   return (
     <View>
-      <View style={[styles.container, {borderWidth: border === id ? 1 : 0}]}>
-        <Text style={styles.titleText}>{title}</Text>
-        <Text style={styles.descriptionText}>{description}</Text>
+      <TouchableOpacity style={[styles.container, {borderWidth: border === id ? 1 : 0}]}>
+        <Text style={[styles.titleText, themeTextStyle]}>{title}</Text>
+        <Text style={[styles.descriptionText, themeTextStyle]}>{description}</Text>
         <View style={styles.footerContainer}>
           <Text style={styles.dateText}>{date}</Text>
           <TouchableOpacity
@@ -43,25 +54,35 @@ export const Comment: React.FC<Props> = ({
             <Text style={styles.buttonText}>Ответить</Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </TouchableOpacity>
       <View style={styles.replyContainer}>
         {comments &&
-          Object.keys(comments).map(index => {
-            return (
-              <Comment
-                key={index}
-                id={index}
-                title={comments[index].title}
-                description={comments[index].description}
-                date={comments[index].date}
-                comments={comments[index].comments}
-                path={`${path}/comments/${index}`}
-                reply={reply}
-                border={border}
-                setBorder={setBorder}
-              />
-            );
-          })}
+          Object.keys(comments)
+            .sort((a, b) => {
+              if (comments[a].date < comments[b].date) {
+                return 1;
+              }
+              if (comments[a].date > comments[b].date) {
+                return -1;
+              }
+              return 0;
+            })
+            .map(index => {
+              return (
+                <Comment
+                  key={index}
+                  id={index}
+                  title={comments[index].title}
+                  description={comments[index].description}
+                  date={comments[index].date}
+                  comments={comments[index].comments}
+                  path={`${path}/comments/${index}`}
+                  reply={reply}
+                  border={border}
+                  setBorder={setBorder}
+                />
+              );
+            })}
       </View>
     </View>
   );

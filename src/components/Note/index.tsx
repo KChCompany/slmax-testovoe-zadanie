@@ -4,8 +4,8 @@ import {
   Text,
   TouchableOpacity,
   View,
-  StyleSheet,
-} from 'react-native';
+  StyleSheet, useColorScheme,
+} from "react-native";
 
 import React, {useEffect, useState} from 'react';
 import {ShowNoteButton} from '../ShowNoteButton';
@@ -35,6 +35,16 @@ export const Note: React.FC<Props> = ({
   const [countdown, setCountdown] = useState(false);
   const [border, setBorder] = useState('');
   const [commentVisibility, setCommentVisibility] = useState(false);
+  const isDarkMode = useColorScheme() === 'dark';
+
+  const themeTextStyle = {
+    color: isDarkMode ? '#ffffff' : '#000000',
+  };
+
+  const themeBackgroundStyle = {
+    borderColor: isDarkMode ? '#363636' : '#D2D2D2',
+    backgroundColor: isDarkMode ? '#363636' : '#ffffff',
+  };
 
   const renderRightActions = (progress, dragX, onClick) => {
     return (
@@ -71,22 +81,22 @@ export const Note: React.FC<Props> = ({
           reply(null);
         }}>
         <Swipeable
-          containerStyle={styles.swipeContainer}
+          containerStyle={[styles.swipeContainer, themeBackgroundStyle]}
           renderRightActions={(progress, dragX) =>
             renderRightActions(progress, dragX, () => {
               setCountdown(prevState => !prevState);
             })
           }>
-          <View style={styles.container}>
+          <View style={[styles.container, themeBackgroundStyle]}>
             <View style={styles.titleContainer}>
-              <Text style={styles.titleText}>{title}</Text>
+              <Text style={[styles.titleText, themeTextStyle]}>{title}</Text>
             </View>
             <View style={styles.separator} />
             <View style={styles.shortDescriptionContainer}>
               <Text
                 ellipsizeMode={'tail'}
                 numberOfLines={1}
-                style={styles.shortDescriptionText}>
+                style={[styles.shortDescriptionText, themeTextStyle]}>
                 {description.length < 20
                   ? `${description}`
                   : `${description.substring(0, 20)}...`}{' '}
@@ -109,8 +119,8 @@ export const Note: React.FC<Props> = ({
               reply({title, path: `${id}`});
               setBorder(id);
             }}>
-            <Text style={styles.dateText}>{date}</Text>
-            <Text style={styles.fullDescriptionText}>{description}</Text>
+            <Text style={[styles.dateText, themeTextStyle]}>{date}</Text>
+            <Text style={[styles.fullDescriptionText, themeTextStyle]}>{description}</Text>
           </TouchableOpacity>
           {comments &&
             Object.keys(comments)
@@ -118,6 +128,7 @@ export const Note: React.FC<Props> = ({
                 commentVisibility ? true : index === 0,
               )
               .map(index => {
+                console.log('comments', Object.keys(comments).length);
                 return (
                   <View key={index}>
                     <Comment
@@ -137,34 +148,20 @@ export const Note: React.FC<Props> = ({
                         setBorder(borderId);
                       }}
                     />
-                    {comments[index].comments && !commentVisibility && (
-                      <TouchableOpacity
-                        style={{
-                          flexDirection: 'row',
-                          marginHorizontal: 47,
-                          alignItems: 'center',
-                        }}
-                        onPress={() =>
-                          setCommentVisibility(prevState => !prevState)
-                        }>
-                        <View
-                          style={{
-                            borderBottomWidth: 1,
-                            width: 17,
-                            borderColor: '#D2D2D2',
-                            marginRight: 4,
-                          }}
-                        />
-                        <Text
-                          style={{
-                            fontFamily: 'Raleway-SemiBold',
-                            fontSize: 10,
-                            color: '#D2D2D2',
-                          }}>
-                          Показать все ответы
-                        </Text>
-                      </TouchableOpacity>
-                    )}
+                    {(comments[index].comments ||
+                      Object.keys(comments).length > 1) &&
+                      !commentVisibility && (
+                        <TouchableOpacity
+                          style={styles.showMoreContainer}
+                          onPress={() =>
+                            setCommentVisibility(prevState => !prevState)
+                          }>
+                          <View style={styles.showMoreLine} />
+                          <Text style={styles.showMoreText}>
+                            Показать все ответы
+                          </Text>
+                        </TouchableOpacity>
+                      )}
                   </View>
                 );
               })}
@@ -180,7 +177,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginHorizontal: 30,
     height: 37,
-    borderColor: '#D2D2D2',
     marginVertical: 5,
   },
   container: {
@@ -256,5 +252,21 @@ const styles = StyleSheet.create({
     lineHeight: 16,
     color: '#ffffff',
     textAlign: 'center',
+  },
+  showMoreContainer: {
+    flexDirection: 'row',
+    marginHorizontal: 47,
+    alignItems: 'center',
+  },
+  showMoreLine: {
+    borderBottomWidth: 1,
+    width: 17,
+    borderColor: '#D2D2D2',
+    marginRight: 4,
+  },
+  showMoreText: {
+    fontFamily: 'Raleway-SemiBold',
+    fontSize: 10,
+    color: '#D2D2D2',
   },
 });

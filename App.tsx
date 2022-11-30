@@ -8,11 +8,12 @@ import {
   ScrollView,
   StatusBar,
   StyleSheet,
-  Text, TouchableOpacity,
+  Text,
+  TouchableOpacity,
   TouchableWithoutFeedback,
   useColorScheme,
   View,
-} from "react-native";
+} from 'react-native';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
 import {Header, NewNote, Note} from './src/components';
@@ -27,6 +28,7 @@ const App = () => {
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? '#000000' : '#ffffff',
+    color: isDarkMode ? '#ffffff' : '#000000',
   };
   const [reply, setReply] = useState(null);
   const [list, setList] = useState<any[]>([]);
@@ -54,22 +56,36 @@ const App = () => {
           <SafeAreaView style={[backgroundStyle, styles.container]}>
             <ScrollView
               contentInsetAdjustmentBehavior="automatic"
-              style={[backgroundStyle, styles.scrollContainer, {marginBottom: reply ? 0 : -20}]}>
+              style={[
+                backgroundStyle,
+                styles.scrollContainer,
+                {marginBottom: reply ? 0 : -20},
+              ]}>
               <View style={{height: 64}} />
               {list &&
-                Object.keys(list).map(index => {
-                  return (
-                    <Note
-                      key={index}
-                      id={index}
-                      title={list[index].title}
-                      description={list[index].description}
-                      date={list[index].date}
-                      comments={list[index].comments}
-                      reply={(reply) => setReply(reply)}
-                    />
-                  );
-                })}
+                Object.keys(list)
+                  .sort((a, b) => {
+                    if (list[a].date < list[b].date) {
+                      return 1;
+                    }
+                    if (list[a].date > list[b].date) {
+                      return -1;
+                    }
+                    return 0;
+                  })
+                  .map(index => {
+                    return (
+                      <Note
+                        key={index}
+                        id={index}
+                        title={list[index].title}
+                        description={list[index].description}
+                        date={list[index].date}
+                        comments={list[index].comments}
+                        reply={reply => setReply(reply)}
+                      />
+                    );
+                  })}
               <View style={{height: 20}} />
             </ScrollView>
             <NewNote reply={reply} />

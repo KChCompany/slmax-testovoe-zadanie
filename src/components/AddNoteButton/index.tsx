@@ -1,12 +1,13 @@
 import * as React from 'react';
 import Svg, {Path} from 'react-native-svg';
-import {TouchableOpacity} from 'react-native';
+import { TouchableOpacity, useColorScheme } from "react-native";
 
 interface Props {
   onPress: any;
 }
 
 export const AddNoteButton: React.FC<Props> = ({onPress}) => {
+  const isDarkMode = useColorScheme() === 'dark';
   return (
     <TouchableOpacity onPress={onPress} style={{ justifyContent: 'center'}}>
       <Svg
@@ -18,7 +19,7 @@ export const AddNoteButton: React.FC<Props> = ({onPress}) => {
       >
         <Path
           d="M10.74 16.845l3.52-3.829-3.52-3.829"
-          stroke="#000"
+          stroke={isDarkMode ? '#ffffff' : '#000000'}
           strokeWidth={0.5}
           strokeLinecap="round"
           strokeLinejoin="round"
