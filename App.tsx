@@ -26,6 +26,7 @@ const App = () => {
   };
   const [reply, setReply] = useState(null);
   const [list, setList] = useState<any[]>([]);
+  const [border, setBorder] = useState('');
 
   useEffect(() => {
     const subscription = subscribeNotes(notes => {
@@ -77,12 +78,20 @@ const App = () => {
                         date={list[index].date}
                         comments={list[index].comments}
                         reply={reply => setReply(reply)}
+                        border={border}
+                        setBorder={setBorder}
                       />
                     );
                   })}
               <View style={{height: 20}} />
             </ScrollView>
-            <NewNote reply={reply} />
+            <NewNote
+              reply={reply}
+              clearReply={() => {
+                setReply(null);
+                setBorder('');
+              }}
+            />
           </SafeAreaView>
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>

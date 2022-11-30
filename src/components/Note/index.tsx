@@ -21,6 +21,8 @@ interface Props {
   date: string;
   comments: any[];
   reply: (reply: object | null) => void;
+  border: string;
+  setBorder: (borderId: string) => void;
 }
 
 export const Note: React.FC<Props> = ({
@@ -30,10 +32,11 @@ export const Note: React.FC<Props> = ({
   date,
   comments,
   reply,
+  border,
+  setBorder,
 }) => {
   const [visibility, setVisibility] = useState(false);
   const [countdown, setCountdown] = useState(false);
-  const [border, setBorder] = useState('');
   const [commentVisibility, setCommentVisibility] = useState(false);
   const isDarkMode = useColorScheme() === 'dark';
 
@@ -46,11 +49,22 @@ export const Note: React.FC<Props> = ({
     backgroundColor: isDarkMode ? '#363636' : '#ffffff',
   };
 
-  const renderRightActions = (progress: any, dragX: any, onClick: () => void) => {
+  const renderRightActions = (
+    progress: any,
+    dragX: any,
+    onClick: () => void,
+  ) => {
     return (
       <TouchableOpacity style={styles.deleteButtonContainer} onPress={onClick}>
         {countdown ? (
-          <Countdown onStop={() => deleteNote(id)} />
+          <Countdown
+            onStop={() => {
+              deleteNote(id).then(() => {
+                reply(null);
+                setBorder('');
+              });
+            }}
+          />
         ) : (
           <Text style={styles.deleteButtonText}>Удалить</Text>
         )}
@@ -126,6 +140,14 @@ export const Note: React.FC<Props> = ({
                 commentVisibility ? true : index === 0,
               )
               .map(index => {
+                const commentsDepth: number = (commentsArray: object) => {
+                  if (commentsArray) {
+                    const i = Object.keys(commentsArray)[0];
+                    return 1 + commentsDepth(commentsArray[i].comments);
+                  } else {
+                    return 0;
+                  }
+                };
                 return (
                   <View key={index}>
                     <Comment
@@ -145,7 +167,7 @@ export const Note: React.FC<Props> = ({
                         setBorder(borderId);
                       }}
                     />
-                    {(comments[index].comments ||
+                    {(commentsDepth(comments[index].comments) > 1 ||
                       Object.keys(comments).length > 1) &&
                       !commentVisibility && (
                         <TouchableOpacity

@@ -14,13 +14,14 @@ import {addComment, addNote} from '../../config/firebase';
 import {AddNoteButton} from '../AddNoteButton';
 
 interface Props {
+  clearReply: () => void
   reply: null | {
     path: string;
     title: string;
   };
 }
 
-export const NewNote: React.FC<Props> = ({reply}) => {
+export const NewNote: React.FC<Props> = ({reply, clearReply}) => {
   const descriptionInput = useRef(null);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -71,6 +72,7 @@ export const NewNote: React.FC<Props> = ({reply}) => {
             onPress={async () => {
               if (reply) {
                 await addComment(title, description, reply.path);
+                clearReply();
               } else {
                 await addNote(title, description);
               }
